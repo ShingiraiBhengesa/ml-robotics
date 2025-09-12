@@ -1,0 +1,13 @@
+# Geometry (mm)
+base_height: 65
+shoulder_length: 105
+forearm_length: 100
+wrist_length: 60
+
+# Joint limits (deg)
+limits:
+  base:     {min: -90,  max: 90}
+  shoulder: {min: 0,    max: 135}
+  elbow:    {min: -135, max: 135}
+  wrist:    {min: -90,  max: 90}
+  gripper:  {min: 0,    max: 60}
