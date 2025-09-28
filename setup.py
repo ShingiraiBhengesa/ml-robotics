@@ -1,21 +1,25 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+from glob import glob
+import os
+
 package_name = 'lynxmotion_pick_place'
 
 setup(
-    name=package_name,
+    name='lynxmotion-pick-place',   # it's OK if yours uses hyphen; keep it consistent
     version='0.1.0',
-    packages=[package_name, f'{package_name}.utils'],
+    packages=find_packages(include=[package_name, package_name + '.*']),
     data_files=[
-        ('share/ament_index/resource_index/packages', [f'resource/{package_name}']),
-        (f'share/{package_name}', ['package.xml']),
-        (f'share/{package_name}/launch', [f'{package_name}/launch/pick_demo.launch.py']),
-        (f'share/{package_name}/config', [f'{package_name}/config/arm_config.yaml']),
+        ('share/ament_index/resource_index/packages',
+         ['resource/' + package_name]),
+        ('share/' + package_name, ['package.xml']),
+        ('share/' + package_name + '/launch', glob('launch/*.launch.py')),
+        ('share/' + package_name + '/config', glob('config/*')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    author='Shingirai Bhengesa',
-    author_email='you@example.com',
-    description='ZED-M + VLM + IK + Arduino',
+    maintainer='you',
+    maintainer_email='you@example.com',
+    description='Pick & place stack',
     license='MIT',
     entry_points={
         'console_scripts': [
