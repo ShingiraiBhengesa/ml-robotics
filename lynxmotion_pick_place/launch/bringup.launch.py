@@ -12,6 +12,15 @@ def generate_launch_description():
         'config', 'zedm.yaml'
     )
 
+    # Robot description launch
+    robot_description = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(get_package_share_directory('lynxmotion_pick_place'),
+                         'launch', 'robot_description.launch.py')
+        )
+    )
+
+    # ZED camera launch
     zed = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('zed_wrapper'),
@@ -20,12 +29,80 @@ def generate_launch_description():
         launch_arguments={'param_file': cfg}.items()
     )
 
-    app = Node(
+    # Launch all pipeline nodes
+    vlm_detector = Node(
         package='lynxmotion_pick_place',
-        executable='demo',   # change if your console_script is named differently
-        name='pick_place',
+        executable='vlm_detector_node',
+        name='vlm_detector',
+        output='screen',
+        parameters=[{
+            'model_id': 'IDEA-Research/grounding-dino-tiny',
+            'box_threshold': 0.35,
+            'text_threshold': 0.25,
+            'topic_rgb': '/zed/left/image_rect_color'
+        }]
+    )
+    
+    depth_sampler = Node(
+        package='lynxmotion_pick_place',
+        executable='depth_sampler_node',
+        name='depth_sampler',
+        output='screen',
+        parameters=[{
+            'window': 7,
+            'topic_depth': '/zed/depth/depth_registered',
+            'topic_info': '/zed/left/camera_info'
+        }]
+    )
+    
+    target_selector = Node(
+        package='lynxmotion_pick_place',
+        executable='target_selector_node',
+        name='target_selector',
+        output='screen',
+        parameters=[{
+            'base_frame': 'base_link',
+            'camera_frame': 'zed_left_camera_frame'
+        }]
+    )
+    
+    task_manager = Node(
+        package='lynxmotion_pick_place',
+        executable='task_manager_node',
+        name='task_manager',
         output='screen'
     )
+    
+    ik_node = Node(
+        package='lynxmotion_pick_place',
+        executable='ik_node',
+        name='ik_node',
+        output='screen',
+        parameters=[{
+            'grip_angle_deg': 90.0
+        }]
+    )
+    
+    arduino_bridge = Node(
+        package='lynxmotion_pick_place',
+        executable='arduino_bridge_node',
+        name='arduino_bridge',
+        output='screen',
+        parameters=[{
+            'port': '/dev/ttyUSB0',  # Change to your Arduino port
+            'baud': 115200,
+            'move_time_ms': 400,
+            'dry_run': True  # Set to False when ready for real hardware
+        }]
+    )
 
-    return LaunchDescription([zed, app])
-
+    return LaunchDescription([
+        robot_description,
+        zed,
+        vlm_detector,
+        depth_sampler,
+        target_selector,
+        task_manager,
+        ik_node,
+        arduino_bridge
+    ])

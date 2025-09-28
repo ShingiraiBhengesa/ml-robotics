@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lynxmotion_arm">
+
+  <!-- Robot Parameters -->
+  <xacro:property name="base_height" value="0.065" />
+  <xacro:property name="shoulder_length" value="0.105" />
+  <xacro:property name="forearm_length" value="0.100" />
+  <xacro:property name="wrist_length" value="0.060" />
+
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder length="${base_height}" radius="0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.2 0.2 0.2 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ZED Camera Link (mounted above the robot base) -->
+  <link name="zed_base_link">
+    <visual>
+      <geometry>
+        <box size="0.175 0.030 0.033"/>
+      </geometry>
+      <material name="zed_mat">
+        <color rgba="0.25 0.25 0.25 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ZED Left Camera Frame -->
+  <link name="zed_left_camera_frame"/>
+
+  <!-- Joint from base to ZED camera -->
+  <joint name="base_to_zed" type="fixed">
+    <parent link="base_link"/>
+    <child link="zed_base_link"/>
+    <!-- Camera positioned 30cm above and 10cm forward of robot base -->
+    <origin xyz="0.10 0.0 0.30" rpy="0 0.2 0"/>
+  </joint>
+
+  <!-- Joint from ZED base to left camera frame -->
+  <joint name="zed_base_to_left_cam" type="fixed">
+    <parent link="zed_base_link"/>
+    <child link="zed_left_camera_frame"/>
+    <!-- Left camera offset -->
+    <origin xyz="0.0 0.06 0.0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Arm Links (simplified for coordinate frame reference) -->
+  <link name="shoulder_link"/>
+  <link name="elbow_link"/>
+  <link name="wrist_link"/>
+  <link name="gripper_link"/>
+
+  <!-- Arm Joints (for reference) -->
+  <joint name="base_to_shoulder" type="revolute">
+    <parent link="base_link"/>
+    <child link="shoulder_link"/>
+    <origin xyz="0.0 0.0 ${base_height}" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.57" upper="1.57" effort="10" velocity="1.0"/>
+  </joint>
+
+  <joint name="shoulder_to_elbow" type="revolute">
+    <parent link="shoulder_link"/>
+    <child link="elbow_link"/>
+    <origin xyz="${shoulder_length} 0.0 0.0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0" upper="2.36" effort="10" velocity="1.0"/>
+  </joint>
+
+  <joint name="elbow_to_wrist" type="revolute">
+    <parent link="elbow_link"/>
+    <child link="wrist_link"/>
+    <origin xyz="${forearm_length} 0.0 0.0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.36" upper="2.36" effort="10" velocity="1.0"/>
+  </joint>
+
+  <joint name="wrist_to_gripper" type="revolute">
+    <parent link="wrist_link"/>
+    <child link="gripper_link"/>
+    <origin xyz="${wrist_length} 0.0 0.0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.57" upper="1.57" effort="5" velocity="1.0"/>
+  </joint>
+
+</robot>
