@@ -1,0 +1,17 @@
+# minimal example – extend as you need
+zed_node:
+  ros__parameters:
+    general:
+      camera_model: "zedm"
+      camera_name: "zedm"
+      pub_downscale_factor: 2
+    video:
+      brightness: 4
+      contrast: 4
+      auto_exposure_gain: true
+    depth:
+      depth_mode: "PERFORMANCE"   # ULTRA | QUALITY | PERFORMANCE | NONE
+      min_depth: 0.1
+      max_depth: 10.0
+      depth_stabilization: 1
+      point_cloud_freq: 10.0
