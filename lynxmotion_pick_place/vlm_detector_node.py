@@ -13,7 +13,7 @@ class VLMDINO(Node):
         self.model_id = self.declare_parameter('model_id','IDEA-Research/grounding-dino-tiny').get_parameter_value().string_value
         self.box_threshold = float(self.declare_parameter('box_threshold',0.35).value)
         self.text_threshold = float(self.declare_parameter('text_threshold',0.25).value)
-        self.topic_rgb = self.declare_parameter('topic_rgb','/zed/left/image_rect_color').get_parameter_value().string_value
+        self.topic_rgb = self.declare_parameter('topic_rgb','/zedm/zed_node/left/image_rect_color').get_parameter_value().string_value
         self.prompts = ["a red ball"]
         self.processor = AutoProcessor.from_pretrained(self.model_id)
         dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

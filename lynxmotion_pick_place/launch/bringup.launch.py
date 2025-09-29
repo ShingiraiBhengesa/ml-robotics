@@ -29,17 +29,15 @@ def generate_launch_description():
         launch_arguments={'param_file': cfg}.items()
     )
 
-    # Launch all pipeline nodes
-    vlm_detector = Node(
+    # Launch YOLOv8 detector (replaces problematic VLM detector)
+    yolo_detector = Node(
         package='lynxmotion_pick_place',
-        executable='vlm_detector_node',
-        name='vlm_detector',
+        executable='simple_yolo_detector',
+        name='yolo_detector', 
         output='screen',
         parameters=[{
-            'model_id': 'IDEA-Research/grounding-dino-tiny',
-            'box_threshold': 0.35,
-            'text_threshold': 0.25,
-            'topic_rgb': '/zed/left/image_rect_color'
+            'confidence_threshold': 0.25,
+            'topic_rgb': '/zedm/zed_node/left/image_rect_color'
         }]
     )
     
@@ -50,8 +48,8 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'window': 7,
-            'topic_depth': '/zed/depth/depth_registered',
-            'topic_info': '/zed/left/camera_info'
+            'topic_depth': '/zedm/zed_node/depth/depth_registered',
+            'topic_info': '/zedm/zed_node/left/camera_info'
         }]
     )
     
@@ -99,7 +97,7 @@ def generate_launch_description():
     return LaunchDescription([
         robot_description,
         zed,
-        vlm_detector,
+        yolo_detector,
         depth_sampler,
         target_selector,
         task_manager,

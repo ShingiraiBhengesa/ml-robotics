@@ -21,6 +21,7 @@ setup(
         'torch>=1.9.0',
         'transformers>=4.21.0',
         'opencv-python>=4.5.0',
+        'ultralytics>=8.0.0',
         'pyserial>=3.5',
         'pyyaml>=5.4.0',
         'numpy>=1.19.0'
@@ -40,7 +41,12 @@ setup(
             'task_manager_node = lynxmotion_pick_place.task_manager_node:main',
             'natural_language_interface = lynxmotion_pick_place.natural_language_interface:main',
             'vision_test_node = lynxmotion_pick_place.vision_test_node:main',
+            'enhanced_vlm_detector = lynxmotion_pick_place.enhanced_vlm_detector:main',
+            'enhanced_vision_test = lynxmotion_pick_place.enhanced_vision_test:main',
+            'yolo_enhanced_detector = lynxmotion_pick_place.yolo_enhanced_detector:main',
+            'vlm_detection_test = lynxmotion_pick_place.vlm_detection_test:main',
             'pipeline_integration_test = lynxmotion_pick_place.tests.integration.test_pipeline:main',
+            'simple_yolo_detector = lynxmotion_pick_place.simple_yolo_detector:main',
         ],
     },
 )
